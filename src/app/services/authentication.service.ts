@@ -21,8 +21,13 @@ export class AuthenticationService {
     this.currentUser$ = this.currentUserSubject.asObservable();
   }
 
-  getCurrentUser(): Observable<string | null> {
+  getCurrentUser$(): Observable<string | null> {
+    // this.currentUserSubject.getValue();
     return this.currentUser$;
+  }
+
+  getCurrentUser(): string | null {
+    return this.currentUserSubject.getValue();
   }
 
   login(username: string): void {

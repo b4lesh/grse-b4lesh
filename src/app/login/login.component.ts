@@ -29,7 +29,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.sub = this.auth.getCurrentUser().subscribe((data) => {
+    this.sub = this.auth.getCurrentUser$().subscribe((data) => {
       this.currentUser = data;
     });
     if (this.currentUser) {

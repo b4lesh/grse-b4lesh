@@ -1,0 +1,113 @@
+<main class="container-xxl">
+  <div>
+    <label for="search" class="visually-hidden"></label>
+    <input
+      type="text"
+      id="search"
+      class="form-control"
+      placeholder="Поиск"
+      [(ngModel)]="searchText"
+    />
+  </div>
+  <table class="table table-hover">
+    <thead>
+      <tr>
+        <th class="status align-middle" (click)="sortTable('isDone')">
+          Статус
+          <img
+            *ngIf="sortOrder === 'isDone' && !sortReverse"
+            src="https://www.flaticon.com/svg/static/icons/svg/481/481058.svg"
+            alt="ascending"
+          />
+          <img
+            *ngIf="sortOrder === 'isDone' && sortReverse"
+            src="https://www.flaticon.com/svg/static/icons/svg/481/481058.svg"
+            alt="ascending"
+            class="descending"
+          />
+        </th>
+        <th class="text align-middle" (click)="sortTable('text')">
+          Текст
+          <img
+            *ngIf="sortOrder === 'text' && !sortReverse"
+            src="https://www.flaticon.com/svg/static/icons/svg/481/481058.svg"
+            alt="ascending"
+          />
+          <img
+            *ngIf="sortOrder === 'text' && sortReverse"
+            src="https://www.flaticon.com/svg/static/icons/svg/481/481058.svg"
+            alt="ascending"
+            class="descending"
+          />
+        </th>
+        <th class="delete"></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let task of taskList">
+        <td class="status position-relative">
+          <label
+            for="inputCheckboxBody{{ task.id }}"
+            class="visually-hidden"
+          ></label>
+          <input
+            type="checkbox"
+            id="inputCheckboxBody{{ task.id }}"
+            class="form-check-input position-absolute top-50 left-50 translate-middle"
+            [checked]="task.isDone"
+            (click)="changeIsDoneTask(task.id, task.isDone)"
+          />
+        </td>
+        <td
+          class="text align-middle"
+          (click)="displayInputTaskContainer('change', task.id, task.text)"
+        >
+          {{ task.text }}
+        </td>
+        <td class="delete position-relative">
+          <img
+            class="position-absolute top-50 left-50 translate-middle"
+            src="https://www.flaticon.com/svg/static/icons/svg/1828/1828843.svg"
+            alt="Удалить"
+            (click)="deleteTask(task.id)"
+          />
+        </td>
+      </tr>
+    </tbody>
+  </table>
+  <section class="mt-4">
+    <button
+      class="btn btn-secondary"
+      (click)="displayInputTaskContainer('add')"
+      *ngIf="!isUnhideAddChangeTaskContainer"
+    >
+      Добавить задачу
+    </button>
+  </section>
+  <section class="mt-4" *ngIf="isUnhideAddChangeTaskContainer">
+    <form class="input-form" [formGroup]="addChangeTaskGroup">
+      <label for="inputText" class="visually-hidden"></label>
+      <input
+        type="text"
+        class="form-control"
+        id="inputText"
+        placeholder="Текст задачи"
+        formControlName="taskText"
+        (keyup.enter)="addChangeTextTask()"
+      />
+    </form>
+    <button
+      class="btn btn-secondary"
+      (click)="this.isUnhideAddChangeTaskContainer = false"
+    >
+      Отмена
+    </button>
+    <button
+      class="btn btn-primary"
+      (click)="addChangeTextTask()"
+      [disabled]="!addChangeTaskGroup.valid"
+    >
+      {{ btnInputName }}
+    </button>
+  </section>
+</main>

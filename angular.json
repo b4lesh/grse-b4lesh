@@ -114,6 +114,10 @@
               "devServerTarget": "grse-b4lesh:serve:production"
             }
           }
+        },
+        "deploy": {
+          "builder": "@angular/fire:deploy",
+          "options": {}
         }
       }
     }

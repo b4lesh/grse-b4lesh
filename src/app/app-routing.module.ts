@@ -20,6 +20,13 @@ const routes: Routes = [
     loadChildren: () =>
       import('./login/login.module').then((module) => module.LoginModule),
   },
+  {
+    path: 'task-list',
+    loadChildren: () =>
+      import('./task-list/task-list.module').then(
+        (module) => module.TaskListModule
+      ),
+  },
   { path: '**', redirectTo: '' },
 ];
 

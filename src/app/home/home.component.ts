@@ -14,7 +14,7 @@ export class HomeComponent implements OnInit, OnDestroy {
   constructor(private auth: AuthenticationService) {}
 
   ngOnInit(): void {
-    this.sub = this.auth.getCurrentUser().subscribe((data) => {
+    this.sub = this.auth.getCurrentUser$().subscribe((data) => {
       this.currentUser = data;
     });
   }
