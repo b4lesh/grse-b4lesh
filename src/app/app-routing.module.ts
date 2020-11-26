@@ -29,7 +29,13 @@ const routes: Routes = [
       ),
     canActivate: [AuthenticationGuard],
   },
-  { path: '**', redirectTo: '' },
+  {
+    path: '**',
+    loadChildren: () =>
+      import('./page-not-found/page-not-found.module').then(
+        (module) => module.PageNotFoundModule
+      ),
+  },
 ];
 
 @NgModule({
