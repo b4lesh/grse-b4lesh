@@ -59,7 +59,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           user.password === password
         ) {
           isLogin = true;
-          console.log(user.username);
           this.auth.login(user.username);
           setTimeout(() => this.router.navigate(['/']), 250);
         }
