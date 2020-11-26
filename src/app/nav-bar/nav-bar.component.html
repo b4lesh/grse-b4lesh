@@ -1,0 +1,57 @@
+<nav class="navbar sticky-top navbar-expand-sm navbar-light bg-light">
+  <div class="container-xxl">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-toggle="collapse"
+      data-target="#navbarTogglerDemo01"
+      aria-controls="navbarTogglerDemo01"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+      <ul class="navbar-nav mr-auto">
+        <li class="nav-item">
+          <a
+            class="nav-link"
+            routerLink="/"
+            routerLinkActive="active"
+            [routerLinkActiveOptions]="{ exact: true }"
+          >
+            Главная
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/todo-list" routerLinkActive="active">
+            Список задач
+          </a>
+        </li>
+      </ul>
+      <form class="d-flex">
+        <button
+          *ngIf="!isSignIn"
+          class="btn navbar-btn-login"
+          routerLink="/login"
+        >
+          Войти
+        </button>
+        <button
+          *ngIf="!isSignIn"
+          class="navbar-btn-register"
+          routerLink="/registration"
+        >
+          Регистрация
+        </button>
+        <button
+          *ngIf="isSignIn"
+          class="btn navbar-btn-logout"
+          (click)="logout()"
+        >
+          Выйти
+        </button>
+      </form>
+    </div>
+  </div>
+</nav>
