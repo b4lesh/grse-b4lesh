@@ -8,6 +8,14 @@ const routes: Routes = [
     loadChildren: () =>
       import('./home/home.module').then((module) => module.HomeModule),
   },
+  {
+    path: 'registration',
+    loadChildren: () =>
+      import('./registration/registration.module').then(
+        (module) => module.RegistrationModule
+      ),
+  },
+  { path: '**', redirectTo: '' },
 ];
 
 @NgModule({
