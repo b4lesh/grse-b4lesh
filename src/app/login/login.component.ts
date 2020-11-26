@@ -1,26 +1,46 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { User } from '../interfaces/user';
+import { Subscription } from 'rxjs';
+import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.scss'],
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit, OnDestroy {
   loginForm: FormGroup;
   loginErrorStatus = false;
-  currentUser = localStorage.getItem('currentUser');
+  currentUser: string | null = null;
+  sub: Subscription | null = null;
 
-  constructor(private fb: FormBuilder, private router: Router) {
-    if (this.currentUser) {
-      setTimeout(() => this.router.navigate(['/todo-list']), 200);
-    }
+  constructor(
+    private fb: FormBuilder,
+    private router: Router,
+    private auth: AuthenticationService
+  ) {
+    console.log('В конструкторе login');
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
     });
+  }
+
+  ngOnInit(): void {
+    this.sub = this.auth.getCurrentUser().subscribe((data) => {
+      this.currentUser = data;
+    });
+    if (this.currentUser) {
+      setTimeout(() => this.router.navigate(['']), 250);
+    }
+  }
+
+  ngOnDestroy(): void {
+    if (this.sub) {
+      this.sub.unsubscribe();
+    }
   }
 
   login(): void {
@@ -39,7 +59,8 @@ export class LoginComponent {
           user.password === password
         ) {
           isLogin = true;
-          localStorage.setItem('currentUser', user.username);
+          console.log(user.username);
+          this.auth.login(user.username);
           setTimeout(() => this.router.navigate(['/']), 250);
         }
       }

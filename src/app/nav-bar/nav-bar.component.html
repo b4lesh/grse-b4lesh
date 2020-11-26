@@ -31,21 +31,21 @@
       </ul>
       <div class="d-flex">
         <button
-          *ngIf="!isSignIn"
+          *ngIf="!currentUser"
           class="btn navbar-btn-login"
           routerLink="/login"
         >
           Войти
         </button>
         <button
-          *ngIf="!isSignIn"
+          *ngIf="!currentUser"
           class="navbar-btn-register"
           routerLink="/registration"
         >
           Регистрация
         </button>
         <button
-          *ngIf="isSignIn"
+          *ngIf="currentUser"
           class="btn navbar-btn-logout"
           (click)="logout()"
         >
