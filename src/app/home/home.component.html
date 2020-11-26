@@ -1,1 +1,28 @@
-<p>home works!</p>
+<div class="d-flex flex-column h-100">
+  <!--  <app-navigation-bar></app-navigation-bar>-->
+
+  <main>
+    <div class="container-xxl">
+      <h1 *ngIf="!currentUser; else hello">Это главная страница</h1>
+      <ng-template #hello>
+        <h1>Привет, {{ currentUser }}</h1>
+      </ng-template>
+      <p>
+        Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi atque
+        consequuntur cupiditate eius fuga ipsum nisi optio, provident rerum
+        sapiente. Aspernatur consequatur corporis officia. Architecto corporis
+        cumque delectus expedita officia, porro quos recusandae repellat,
+        sapiente similique, sint suscipit. Consequatur esse, eveniet
+        exercitationem expedita ipsum iusto laboriosam maiores neque officia
+        praesentium. Accusantium aperiam cumque ducimus eaque facilis harum
+        ipsum natus nobis, odio possimus? Aliquam architecto assumenda atque
+        blanditiis consequuntur cupiditate deleniti doloremque ea error esse eum
+        excepturi expedita harum illo ipsam ipsum iusto laborum libero maiores
+        molestias neque nihil nobis quia, rem repellendus rerum saepe, sed
+        soluta vel voluptate voluptatem voluptatibus.
+      </p>
+    </div>
+  </main>
+
+  <!--  <app-footer class="mt-auto"></app-footer>-->
+</div>
