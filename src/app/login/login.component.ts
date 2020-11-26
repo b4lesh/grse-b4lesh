@@ -21,7 +21,6 @@ export class LoginComponent implements OnInit, OnDestroy {
     private router: Router,
     private auth: AuthenticationService
   ) {
-    console.log('В конструкторе login');
     this.loginForm = this.fb.group({
       username: ['', Validators.required],
       password: ['', Validators.required],
@@ -33,7 +32,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.currentUser = data;
     });
     if (this.currentUser) {
-      setTimeout(() => this.router.navigate(['']), 250);
+      this.router.navigate(['']).catch((err) => console.log(err));
     }
   }
 
@@ -60,7 +59,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         ) {
           isLogin = true;
           this.auth.login(user.username);
-          setTimeout(() => this.router.navigate(['/']), 250);
+          this.router.navigate(['/']).catch((err) => console.log(err));
         }
       }
     }

@@ -1,0 +1,15 @@
+{
+  "targets": {
+    "grse-b4lesh": {
+      "hosting": {
+        "grse-b4lesh": [
+          "grse-b4lesh"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "grse-b4lesh",
+    "grse-b4lesh": "grse-b4lesh"
+  }
+}

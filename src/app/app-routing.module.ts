@@ -1,5 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
+import { AuthenticationGuard } from './guards/authentication.guard';
 
 const routes: Routes = [
   {
@@ -26,6 +27,7 @@ const routes: Routes = [
       import('./task-list/task-list.module').then(
         (module) => module.TaskListModule
       ),
+    canActivate: [AuthenticationGuard],
   },
   { path: '**', redirectTo: '' },
 ];

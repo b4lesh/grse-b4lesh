@@ -28,5 +28,6 @@ export class NavBarComponent implements OnInit, OnDestroy {
 
   logout(): void {
     this.auth.logout();
+    this.router.navigate(['']).catch((err) => console.log(err));
   }
 }

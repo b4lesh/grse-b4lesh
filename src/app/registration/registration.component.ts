@@ -55,6 +55,6 @@ export class RegistrationComponent {
     });
 
     localStorage.setItem('user', JSON.stringify(usersArray));
-    setTimeout(() => this.router.navigate(['/login']), 250);
+    this.router.navigate(['/login']);
   }
 }
