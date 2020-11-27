@@ -17,7 +17,6 @@ export class AuthenticationService {
     } else {
       this.currentUserSubject = new BehaviorSubject<string | null>(null);
     }
-
     this.currentUser$ = this.currentUserSubject.asObservable();
   }
 
