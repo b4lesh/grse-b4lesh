@@ -10,9 +10,9 @@ export class CrudService {
 
   getAllTasks(currentUser: string): Observable<any> {
     return this.firestore
-      .collection('task-list', (ref) =>
-        ref.where('username', '==', currentUser)
-      )
+      .collection('task-list', (ref) => {
+        return ref.where('username', '==', currentUser);
+      })
       .snapshotChanges();
   }
 
