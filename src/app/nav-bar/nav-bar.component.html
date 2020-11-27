@@ -30,6 +30,9 @@
         </li>
       </ul>
       <div class="d-flex">
+        <p class="nav-link align-middle mb-0">
+          {{ currentUser }}
+        </p>
         <button
           *ngIf="!currentUser"
           class="btn navbar-btn-login"
