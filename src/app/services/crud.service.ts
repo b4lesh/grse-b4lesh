@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
+import firebase from 'firebase';
 
 @Injectable({
   providedIn: 'root',
@@ -11,9 +12,18 @@ export class CrudService {
   getAllTasks(currentUser: string): Observable<any> {
     return this.firestore
       .collection('task-list', (ref) => {
-        return ref.where('username', '==', currentUser);
+        let query: firebase.firestore.Query = ref;
+        query = query.where('username', '==', currentUser);
+        query = query.orderBy('dateCreated', 'asc');
+        return query;
+        // return ref.where('username', '==', currentUser);
       })
       .snapshotChanges();
+    // return this.firestore
+    //   .collection('task-list')
+    //   .doc('PQIT6faGUNxRa8jXsnoq')
+    //   .collection('george', (ref) => ref)
+    //   .snapshotChanges();
   }
 
   addTask(task: {
