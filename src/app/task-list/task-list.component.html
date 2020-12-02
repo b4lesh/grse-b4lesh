@@ -5,14 +5,32 @@
       type="datetime-local"
       id="date-start"
       class="form-control date-sort date-start"
+      [(ngModel)]="sortDateStart"
+      (ngModelChange)="changeDate()"
     />
+    <button
+      *ngIf="sortDateStart"
+      class="btn clear-date"
+      (click)="sortDateStart = null; changeDate()"
+    >
+      X
+    </button>
     <div class="mt-auto mb-auto pl-2 pr-2">-</div>
     <label for="date-end" class="visually-hidden"></label>
     <input
       type="datetime-local"
       id="date-end"
       class="form-control date-sort date-end"
+      [(ngModel)]="sortDateEnd"
+      (ngModelChange)="changeDate()"
     />
+    <button
+      *ngIf="sortDateEnd"
+      class="btn clear-date"
+      (click)="sortDateEnd = null; changeDate()"
+    >
+      X
+    </button>
     <label for="search" class="visually-hidden"></label>
     <input
       type="text"

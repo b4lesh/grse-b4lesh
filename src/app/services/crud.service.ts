@@ -7,6 +7,8 @@ import firebase from 'firebase';
 interface Query {
   search: string;
   sort: { fieldPath: string; directionStr: 'asc' | 'desc' };
+  dateStart: string;
+  dateEnd: string;
 }
 
 @Injectable({
@@ -16,6 +18,8 @@ export class CrudService {
   query: Query = {
     search: '',
     sort: { fieldPath: 'dateCreated', directionStr: 'asc' },
+    dateStart: '',
+    dateEnd: '',
   };
   querySubject$ = new BehaviorSubject<Query>(this.query);
 
@@ -43,6 +47,20 @@ export class CrudService {
               compositeQuery = compositeQuery.orderBy(
                 allQueries.sort.fieldPath,
                 allQueries.sort.directionStr
+              );
+            }
+            if (allQueries.dateStart) {
+              compositeQuery = compositeQuery.where(
+                'dateCreated',
+                '>=',
+                new Date(allQueries.dateStart)
+              );
+            }
+            if (allQueries.dateEnd) {
+              compositeQuery = compositeQuery.where(
+                'dateCreated',
+                '<=',
+                new Date(allQueries.dateEnd)
               );
             }
             return compositeQuery;
@@ -76,6 +94,12 @@ export class CrudService {
 
   setSortQuery(fieldPath: string, directionStr: 'asc' | 'desc'): void {
     this.query.sort = { fieldPath, directionStr };
+    this.querySubject$.next(this.query);
+  }
+
+  setDate(dateStart: string, dateEnd: string): void {
+    this.query.dateStart = dateStart;
+    this.query.dateEnd = dateEnd;
     this.querySubject$.next(this.query);
   }
 }

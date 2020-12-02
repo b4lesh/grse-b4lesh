@@ -26,6 +26,16 @@
   width: 200px;
 }
 
+.clear-date {
+  padding: 0 0 0 10px;
+  font-weight: 800;
+  color: #ffc000;
+}
+
+.clear-date:focus {
+  box-shadow: none;
+}
+
 .status {
   width: 78px;
 }

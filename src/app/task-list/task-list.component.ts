@@ -17,6 +17,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
   taskList: Array<Task> = []; // Полный список задач
 
   searchText = ''; // Поле для поиска задач
+  sortDateStart = ''; // Поле для ввода начальной даты для фильтрации списка
+  sortDateEnd = ''; // Тоже самое поле только для конечной даты
   sortOrder: 'text' | 'isDone' | 'dateCreated' = 'dateCreated'; // Принимает какое поле сортировать
   directionSort: 'asc' | 'desc' = 'asc';
 
@@ -75,6 +77,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   addChangeTextTask(): void {
+    const currentDate = new Date();
+    currentDate.setSeconds(0, 0);
     if (this.action === 'add') {
       const newTask: {
         text: string;
@@ -84,10 +88,10 @@ export class TaskListComponent implements OnInit, OnDestroy {
       } = {
         text: this.addChangeTaskGroup.value.taskText,
         isDone: false,
-        dateCreated: new Date(),
+        dateCreated: currentDate,
         username: this.currentUser,
       };
-      this.crudService.addTask(newTask).catch((error) => console.log(error));
+      this.crudService.addTask(newTask).catch((error) => console.error(error));
     } else if (this.action === 'change') {
       // TODO: объявлять конкретно change или можно просто else
       const id = this.idTaskChange;
@@ -96,7 +100,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
       };
       this.crudService
         .updateTask(id, modifiedTextTask)
-        .catch((error) => console.log(error));
+        .catch((error) => console.error(error));
     }
     this.addChangeTaskGroup.patchValue({ taskText: '' });
     this.isUnhideAddChangeTaskContainer = false;
@@ -108,11 +112,11 @@ export class TaskListComponent implements OnInit, OnDestroy {
     };
     this.crudService
       .updateTask(id, modifiedIsDoneTask)
-      .catch((error) => console.log(error));
+      .catch((error) => console.error(error));
   }
 
   deleteTask(id: string): void {
-    this.crudService.deleteTask(id).catch((error) => console.log(error));
+    this.crudService.deleteTask(id).catch((error) => console.error(error));
     this.isUnhideAddChangeTaskContainer = false;
   }
 
@@ -128,5 +132,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   setSearchText(): void {
     this.crudService.setSearchQuery(this.searchText);
+  }
+
+  changeDate(): void {
+    this.crudService.setDate(this.sortDateStart, this.sortDateEnd);
   }
 }
