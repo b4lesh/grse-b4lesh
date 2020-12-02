@@ -41,6 +41,20 @@
             class="descending"
           />
         </th>
+        <th class="text align-middle date" (click)="sortTable('dateCreated')">
+          Дата создания
+          <img
+            *ngIf="sortOrder === 'dateCreated' && directionSort === 'asc'"
+            src="https://www.flaticon.com/svg/static/icons/svg/481/481058.svg"
+            alt="ascending"
+          />
+          <img
+            *ngIf="sortOrder === 'dateCreated' && directionSort === 'desc'"
+            src="https://www.flaticon.com/svg/static/icons/svg/481/481058.svg"
+            alt="descending"
+            class="descending"
+          />
+        </th>
         <th class="delete"></th>
       </tr>
     </thead>
@@ -64,6 +78,9 @@
           (click)="displayInputTaskContainer('change', task.id, task.text)"
         >
           {{ task.text }}
+        </td>
+        <td class="text align-middle date">
+          {{ task.dateCreated | date: 'dd/MM/yyyy HH:mm:ss' }}
         </td>
         <td class="delete position-relative">
           <img

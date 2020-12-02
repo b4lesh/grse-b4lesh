@@ -17,7 +17,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
   taskList: Array<Task> = []; // Полный список задач
 
   searchText = ''; // Поле для поиска задач
-  sortOrder: 'text' | 'isDone' | undefined; // Принимает какое поле сортировать
+  sortOrder: 'text' | 'isDone' | 'dateCreated' = 'dateCreated'; // Принимает какое поле сортировать
   directionSort: 'asc' | 'desc' = 'asc';
 
   idTaskChange = ''; // ID задачи которую хотим изменить
@@ -44,6 +44,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
       .subscribe((data) => {
         this.taskList = data.map((element: any) => {
           const task = element.payload.doc.data();
+          task.dateCreated = task.dateCreated.toDate();
           task.id = element.payload.doc.id;
           return task;
         });
@@ -115,7 +116,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
     this.isUnhideAddChangeTaskContainer = false;
   }
 
-  sortTable(sortOrder: 'isDone' | 'text'): void {
+  sortTable(sortOrder: 'isDone' | 'text' | 'dateCreated'): void {
     if (this.sortOrder === sortOrder) {
       this.directionSort = this.directionSort === 'asc' ? 'desc' : 'asc';
     } else {
