@@ -18,8 +18,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   searchText = ''; // Поле для поиска задач
   sortOrder: 'text' | 'isDone' | undefined; // Принимает какое поле сортировать
-
-  sortReverse = false;
+  directionSort: 'asc' | 'desc' = 'asc';
 
   idTaskChange = ''; // ID задачи которую хотим изменить
   isUnhideAddChangeTaskContainer = false; // Отвечает за отображение секции для записи/редактировании новой задачи
@@ -118,13 +117,15 @@ export class TaskListComponent implements OnInit, OnDestroy {
 
   sortTable(sortOrder: 'isDone' | 'text'): void {
     if (this.sortOrder === sortOrder) {
-      this.sortReverse = !this.sortReverse;
+      this.directionSort = this.directionSort === 'asc' ? 'desc' : 'asc';
     } else {
       this.sortOrder = sortOrder;
-      this.sortReverse = false;
+      this.directionSort = 'asc';
     }
+    this.crudService.setSortQuery(this.sortOrder, this.directionSort);
   }
-  f(): void {
-    console.log('F');
+
+  setSearchText(): void {
+    this.crudService.setSearchQuery(this.searchText);
   }
 }

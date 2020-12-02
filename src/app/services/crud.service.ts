@@ -1,29 +1,55 @@
 import { Injectable } from '@angular/core';
+import { BehaviorSubject, Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { AngularFirestore } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
 import firebase from 'firebase';
+
+interface Query {
+  search: string;
+  sort: { fieldPath: string; directionStr: 'asc' | 'desc' };
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class CrudService {
+  query: Query = {
+    search: '',
+    sort: { fieldPath: 'dateCreated', directionStr: 'asc' },
+  };
+  querySubject$ = new BehaviorSubject<Query>(this.query);
+
   constructor(private firestore: AngularFirestore) {}
 
   getAllTasks(currentUser: string): Observable<any> {
-    return this.firestore
-      .collection('task-list', (ref) => {
-        let query: firebase.firestore.Query = ref;
-        query = query.where('username', '==', currentUser);
-        query = query.orderBy('dateCreated', 'asc');
-        return query;
-        // return ref.where('username', '==', currentUser);
-      })
-      .snapshotChanges();
-    // return this.firestore
-    //   .collection('task-list')
-    //   .doc('PQIT6faGUNxRa8jXsnoq')
-    //   .collection('george', (ref) => ref)
-    //   .snapshotChanges();
+    return this.querySubject$.pipe(
+      switchMap((allQueries) =>
+        this.firestore
+          .collection('task-list', (ref) => {
+            let compositeQuery: firebase.firestore.Query = ref;
+            compositeQuery = compositeQuery.where(
+              'username',
+              '==',
+              currentUser
+            );
+            if (allQueries.search) {
+              compositeQuery = compositeQuery.where(
+                'text',
+                '==',
+                allQueries.search
+              );
+            }
+            if (allQueries.sort.fieldPath !== 'text') {
+              compositeQuery = compositeQuery.orderBy(
+                allQueries.sort.fieldPath,
+                allQueries.sort.directionStr
+              );
+            }
+            return compositeQuery;
+          })
+          .snapshotChanges()
+      )
+    );
   }
 
   addTask(task: {
@@ -41,5 +67,15 @@ export class CrudService {
 
   deleteTask(id: string): Promise<any> {
     return this.firestore.collection('task-list').doc(id).delete();
+  }
+
+  setSearchQuery(value: string): void {
+    this.query.search = value;
+    this.querySubject$.next(this.query);
+  }
+
+  setSortQuery(fieldPath: string, directionStr: 'asc' | 'desc'): void {
+    this.query.sort = { fieldPath, directionStr };
+    this.querySubject$.next(this.query);
   }
 }
