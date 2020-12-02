@@ -7,6 +7,7 @@
       class="form-control"
       placeholder="Поиск"
       [(ngModel)]="searchText"
+      (ngModelChange)="f()"
     />
   </div>
   <table class="table table-hover">

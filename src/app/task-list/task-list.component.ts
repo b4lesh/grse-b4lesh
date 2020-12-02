@@ -124,4 +124,7 @@ export class TaskListComponent implements OnInit, OnDestroy {
       this.sortReverse = false;
     }
   }
+  f(): void {
+    console.log('F');
+  }
 }

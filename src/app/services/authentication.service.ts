@@ -21,7 +21,6 @@ export class AuthenticationService {
   }
 
   getCurrentUser$(): Observable<string | null> {
-    // this.currentUserSubject.getValue();
     return this.currentUser$;
   }
 
