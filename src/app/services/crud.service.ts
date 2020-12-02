@@ -39,7 +39,7 @@ export class CrudService {
                 allQueries.search
               );
             }
-            if (allQueries.sort.fieldPath !== 'text') {
+            if (!(allQueries.sort.fieldPath === 'text' && allQueries.search)) {
               compositeQuery = compositeQuery.orderBy(
                 allQueries.sort.fieldPath,
                 allQueries.sort.directionStr

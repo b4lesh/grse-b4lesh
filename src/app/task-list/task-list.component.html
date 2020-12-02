@@ -1,5 +1,18 @@
 <main class="container-xxl">
-  <div>
+  <div class="d-flex mb-4 filter">
+    <label for="date-start" class="visually-hidden"></label>
+    <input
+      type="datetime-local"
+      id="date-start"
+      class="form-control date-sort date-start"
+    />
+    <div class="mt-auto mb-auto pl-2 pr-2">-</div>
+    <label for="date-end" class="visually-hidden"></label>
+    <input
+      type="datetime-local"
+      id="date-end"
+      class="form-control date-sort date-end"
+    />
     <label for="search" class="visually-hidden"></label>
     <input
       type="text"
@@ -41,7 +54,7 @@
             class="descending"
           />
         </th>
-        <th class="text align-middle date" (click)="sortTable('dateCreated')">
+        <th class="date align-middle" (click)="sortTable('dateCreated')">
           Дата создания
           <img
             *ngIf="sortOrder === 'dateCreated' && directionSort === 'asc'"
@@ -79,8 +92,8 @@
         >
           {{ task.text }}
         </td>
-        <td class="text align-middle date">
-          {{ task.dateCreated | date: 'dd/MM/yyyy HH:mm:ss' }}
+        <td class="date align-middle">
+          {{ task.dateCreated | date: 'dd.MM.yyyy HH:mm' }}
         </td>
         <td class="delete position-relative">
           <img
