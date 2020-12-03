@@ -11,7 +11,7 @@
     <button
       *ngIf="sortDateStart"
       class="btn clear-date"
-      (click)="sortDateStart = null; changeDate()"
+      (click)="sortDateStart = ''; changeDate()"
     >
       X
     </button>
@@ -27,7 +27,7 @@
     <button
       *ngIf="sortDateEnd"
       class="btn clear-date"
-      (click)="sortDateEnd = null; changeDate()"
+      (click)="sortDateEnd = ''; changeDate()"
     >
       X
     </button>
