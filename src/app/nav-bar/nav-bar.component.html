@@ -30,25 +30,25 @@
         </li>
       </ul>
       <div class="d-flex">
-        <p *ngIf="currentUser" class="nav-link align-middle mb-0 pl-0">
-          {{ currentUser }}
+        <p *ngIf="currentUserEmail" class="nav-link align-middle mb-0 pl-0">
+          {{ currentUserEmail }}
         </p>
         <button
-          *ngIf="!currentUser"
+          *ngIf="!currentUserEmail"
           class="btn navbar-btn-login"
           routerLink="/login"
         >
           Войти
         </button>
         <button
-          *ngIf="!currentUser"
+          *ngIf="!currentUserEmail"
           class="navbar-btn-register"
           routerLink="/registration"
         >
           Регистрация
         </button>
         <button
-          *ngIf="currentUser"
+          *ngIf="currentUserEmail"
           class="btn navbar-btn-logout"
           (click)="logout()"
         >

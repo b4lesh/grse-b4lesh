@@ -1,6 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
@@ -9,25 +10,28 @@ import { AuthenticationService } from '../services/authentication.service';
   styleUrls: ['./nav-bar.component.scss'],
 })
 export class NavBarComponent implements OnInit, OnDestroy {
-  sub: Subscription | null = null;
-  currentUser: string | null = null;
+  unsubscribe$ = new Subject();
+
+  currentUserEmail: string | null = null;
 
   constructor(private router: Router, private auth: AuthenticationService) {}
 
   ngOnInit(): void {
-    this.sub = this.auth.getCurrentUser$().subscribe((data) => {
-      this.currentUser = data;
-    });
+    this.auth
+      .getCurrentUser()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((userDate) => (this.currentUserEmail = userDate?.email));
   }
 
   ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   logout(): void {
-    this.auth.logout();
-    this.router.navigate(['']).catch((err) => console.log(err));
+    this.auth
+      .signOut()
+      .then(() => this.router.navigate(['']).catch((err) => console.error(err)))
+      .catch((err) => console.error(err));
   }
 }

@@ -1,8 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
 import { Task } from '../interfaces/task';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CrudService } from '../services/crud.service';
+import { take, takeUntil } from 'rxjs/operators';
 import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
@@ -11,9 +12,9 @@ import { AuthenticationService } from '../services/authentication.service';
   styleUrls: ['./task-list.component.scss'],
 })
 export class TaskListComponent implements OnInit, OnDestroy {
-  currentUser: string;
+  userId: string | undefined; // Текущий Id пользователя
 
-  subscription: Subscription | null = null; // Подписка для taskList
+  unsubscribe$ = new Subject(); // Хранит все подписки
   taskList: Array<Task> = []; // Полный список задач
 
   searchText = ''; // Поле для поиска задач
@@ -33,7 +34,13 @@ export class TaskListComponent implements OnInit, OnDestroy {
     private crudService: CrudService,
     private auth: AuthenticationService
   ) {
-    this.currentUser = (this.auth.getCurrentUser() as string).toLowerCase();
+    auth
+      .getCurrentUser()
+      .pipe(take(1))
+      .subscribe((userData) => {
+        this.userId = userData?.uid;
+        this.crudService.setUid(this.userId);
+      });
 
     this.addChangeTaskGroup = this.formBuilder.group({
       taskText: ['', Validators.required],
@@ -41,8 +48,9 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this.subscription = this.crudService
-      .getAllTasks(this.currentUser)
+    this.crudService
+      .getAllTasks()
+      .pipe(takeUntil(this.unsubscribe$))
       .subscribe((data) => {
         this.taskList = data.map((element: any) => {
           const task = element.payload.doc.data();
@@ -54,9 +62,8 @@ export class TaskListComponent implements OnInit, OnDestroy {
   }
 
   ngOnDestroy(): void {
-    if (this.subscription) {
-      this.subscription.unsubscribe();
-    }
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 
   displayInputTaskContainer(
@@ -84,12 +91,12 @@ export class TaskListComponent implements OnInit, OnDestroy {
         text: string;
         isDone: boolean;
         dateCreated: Date;
-        username: string;
+        uid: string;
       } = {
         text: this.addChangeTaskGroup.value.taskText,
         isDone: false,
         dateCreated: currentDate,
-        username: this.currentUser,
+        uid: this.userId as string,
       };
       this.crudService.addTask(newTask).catch((error) => console.error(error));
     } else if (this.action === 'change') {

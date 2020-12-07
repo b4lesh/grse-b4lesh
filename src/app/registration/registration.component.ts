@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { User } from '../interfaces/user';
+import { CrudService } from '../services/crud.service';
+import { AuthenticationService } from '../services/authentication.service';
+import { Error } from '../interfaces/error';
 
 @Component({
   selector: 'app-registration',
@@ -10,18 +12,30 @@ import { User } from '../interfaces/user';
 })
 export class RegistrationComponent {
   registrationForm: FormGroup;
-  registrationErrorStatusLogin = false;
+  emailAlreadyInUse = false;
+  errorList: Array<Error> = [
+    {
+      code: 'auth/email-already-in-use',
+      status: false,
+      msg: 'Такой пользователь уже существует',
+    },
+  ];
 
-  constructor(private formBuilder: FormBuilder, private router: Router) {
+  constructor(
+    private formBuilder: FormBuilder,
+    private crud: CrudService,
+    private auth: AuthenticationService,
+    private router: Router
+  ) {
     this.registrationForm = this.formBuilder.group(
       {
-        username: ['', [Validators.required, Validators.minLength(3)]],
-        password1: ['', [Validators.required, Validators.minLength(6)]],
-        password2: ['', [Validators.required]],
+        email: ['', Validators.email],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        passwordRepeat: ['', [Validators.required]],
       },
       {
         validators: (group: FormGroup) =>
-          group.value.password1 === group.value.password2
+          group.value.password === group.value.passwordRepeat
             ? null
             : { repeat: true },
       }
@@ -29,32 +43,42 @@ export class RegistrationComponent {
   }
 
   registration(): void {
-    let usersArray: Array<User> | null = JSON.parse(
-      localStorage.getItem('user') as string
-    );
-    if (!usersArray) {
-      usersArray = [];
-    }
-    const newUsername = this.registrationForm.value.username;
-    const newPassword1 = this.registrationForm.value.password1;
-    const newId = usersArray.length
-      ? usersArray[usersArray.length - 1].id + 1
-      : 1;
-
-    for (const user of usersArray) {
-      if (user.username.toLowerCase() === newUsername.toLowerCase()) {
-        this.registrationErrorStatusLogin = true;
-        return;
-      }
-    }
-
-    usersArray.push({
-      id: newId,
-      username: newUsername,
-      password: newPassword1,
-    });
-
-    localStorage.setItem('user', JSON.stringify(usersArray));
-    this.router.navigate(['/login']);
+    const { email, password } = this.registrationForm.value;
+    this.auth
+      .signUp(email, password)
+      .then(() => {
+        this.auth
+          .signIn(email, password)
+          .then((dataUser) => {
+            this.crud
+              .addUser(dataUser.user?.uid)
+              .then(() => {
+                this.auth.signOut().then(() => {
+                  this.router
+                    .navigate(['/login'])
+                    .catch((err) => console.error(err));
+                });
+              })
+              .catch((err) => console.error(err));
+          })
+          .catch((err) => console.error(err));
+      })
+      .catch((errorData) => {
+        let newError = true;
+        for (const [i, error] of this.errorList.entries()) {
+          if (errorData.code === error.code) {
+            this.errorList[i].status = true;
+            newError = false;
+            break;
+          }
+        }
+        if (newError) {
+          this.errorList.push({
+            code: errorData.code,
+            status: true,
+            msg: errorData.code,
+          });
+        }
+      });
   }
 }

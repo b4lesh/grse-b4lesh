@@ -9,6 +9,7 @@ interface Query {
   sort: { fieldPath: string; directionStr: 'asc' | 'desc' };
   dateStart: string;
   dateEnd: string;
+  uid: string;
 }
 
 @Injectable({
@@ -20,22 +21,23 @@ export class CrudService {
     sort: { fieldPath: 'dateCreated', directionStr: 'asc' },
     dateStart: '',
     dateEnd: '',
+    uid: '',
   };
   querySubject$ = new BehaviorSubject<Query>(this.query);
 
   constructor(private firestore: AngularFirestore) {}
 
-  getAllTasks(currentUser: string): Observable<any> {
+  addUser(uid: string | undefined): Promise<any> {
+    return this.firestore.collection('users').doc(uid).set({});
+  }
+
+  getAllTasks(): Observable<any> {
     return this.querySubject$.pipe(
       switchMap((allQueries) =>
         this.firestore
           .collection('task-list', (ref) => {
             let compositeQuery: firebase.firestore.Query = ref;
-            compositeQuery = compositeQuery.where(
-              'username',
-              '==',
-              currentUser
-            );
+            compositeQuery = compositeQuery.where('uid', '==', this.query.uid);
             if (allQueries.search) {
               compositeQuery = compositeQuery.where(
                 'text',
@@ -74,7 +76,7 @@ export class CrudService {
     text: string;
     isDone: boolean;
     dateCreated: Date;
-    username: string;
+    uid: string;
   }): Promise<any> {
     return this.firestore.collection('task-list').add(task);
   }
@@ -85,6 +87,11 @@ export class CrudService {
 
   deleteTask(id: string): Promise<any> {
     return this.firestore.collection('task-list').doc(id).delete();
+  }
+
+  setUid(uid: string | undefined): void {
+    this.query.uid = uid ? uid : '';
+    this.querySubject$.next(this.query);
   }
 
   setSearchQuery(value: string): void {

@@ -1,40 +1,33 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { AngularFireAuth } from '@angular/fire/auth';
+import firebase from 'firebase';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthenticationService {
-  currentUserSubject: BehaviorSubject<string | null>;
-  currentUser$: Observable<string | null>;
+  constructor(private fireAuth: AngularFireAuth) {}
 
-  constructor() {
-    const data: string | null = localStorage.getItem('currentUser');
-    if (data) {
-      this.currentUserSubject = new BehaviorSubject<string | null>(
-        JSON.parse(data)
-      );
-    } else {
-      this.currentUserSubject = new BehaviorSubject<string | null>(null);
-    }
-    this.currentUser$ = this.currentUserSubject.asObservable();
+  getCurrentUser(): Observable<any> {
+    return this.fireAuth.user;
   }
 
-  getCurrentUser$(): Observable<string | null> {
-    return this.currentUser$;
+  signUp(
+    email: string,
+    password: string
+  ): ReturnType<firebase.auth.Auth['createUserWithEmailAndPassword']> {
+    return this.fireAuth.createUserWithEmailAndPassword(email, password);
   }
 
-  getCurrentUser(): string | null {
-    return this.currentUserSubject.getValue();
+  signIn(
+    email: string,
+    password: string
+  ): ReturnType<firebase.auth.Auth['signInWithEmailAndPassword']> {
+    return this.fireAuth.signInWithEmailAndPassword(email, password);
   }
 
-  login(username: string): void {
-    localStorage.setItem('currentUser', JSON.stringify(username));
-    this.currentUserSubject.next(username);
-  }
-
-  logout(): void {
-    localStorage.removeItem('currentUser');
-    this.currentUserSubject.next(null);
+  signOut(): ReturnType<firebase.auth.Auth['signOut']> {
+    return this.fireAuth.signOut();
   }
 }

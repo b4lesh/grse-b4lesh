@@ -1,6 +1,13 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { AuthenticationGuard } from './guards/authentication.guard';
+import {
+  AngularFireAuthGuard,
+  redirectLoggedInTo,
+  redirectUnauthorizedTo,
+} from '@angular/fire/auth-guard';
+
+const redirectUnauthorized = () => redirectUnauthorizedTo(['login']);
+const redirectLogged = () => redirectLoggedInTo(['']);
 
 const routes: Routes = [
   {
@@ -15,11 +22,15 @@ const routes: Routes = [
       import('./registration/registration.module').then(
         (module) => module.RegistrationModule
       ),
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectLogged },
   },
   {
     path: 'login',
     loadChildren: () =>
       import('./login/login.module').then((module) => module.LoginModule),
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectLogged },
   },
   {
     path: 'task-list',
@@ -27,7 +38,8 @@ const routes: Routes = [
       import('./task-list/task-list.module').then(
         (module) => module.TaskListModule
       ),
-    canActivate: [AuthenticationGuard],
+    canActivate: [AngularFireAuthGuard],
+    data: { authGuardPipe: redirectUnauthorized },
   },
   {
     path: '**',

@@ -52,3 +52,11 @@ main {
 .error-message {
   color: red;
 }
+
+input[id='email'].ng-touched.ng-valid {
+  border-right: 3px solid green;
+}
+
+input[id='email'].ng-touched.ng-invalid {
+  border-right: 3px solid red;
+}

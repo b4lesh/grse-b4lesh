@@ -1,5 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Subscription } from 'rxjs';
+import { Subject } from 'rxjs';
+import { takeUntil } from 'rxjs/operators';
 import { AuthenticationService } from '../services/authentication.service';
 
 @Component({
@@ -8,20 +9,21 @@ import { AuthenticationService } from '../services/authentication.service';
   styleUrls: ['./home.component.scss'],
 })
 export class HomeComponent implements OnInit, OnDestroy {
-  sub: Subscription | null = null;
-  currentUser: string | null = null;
+  unsubscribe$ = new Subject();
+
+  currentUserEmail: string | null = null;
 
   constructor(private auth: AuthenticationService) {}
 
   ngOnInit(): void {
-    this.sub = this.auth.getCurrentUser$().subscribe((data) => {
-      this.currentUser = data;
-    });
+    this.auth
+      .getCurrentUser()
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((userDate) => (this.currentUserEmail = userDate?.email));
   }
 
   ngOnDestroy(): void {
-    if (this.sub) {
-      this.sub.unsubscribe();
-    }
+    this.unsubscribe$.next();
+    this.unsubscribe$.complete();
   }
 }

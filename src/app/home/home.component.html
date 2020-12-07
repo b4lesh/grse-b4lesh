@@ -1,8 +1,8 @@
 <main>
   <div class="container-xxl">
-    <h1 *ngIf="!currentUser; else hello">Это главная страница</h1>
+    <h1 *ngIf="!currentUserEmail; else hello">Это главная страница</h1>
     <ng-template #hello>
-      <h1>Привет, {{ currentUser }}</h1>
+      <h1>Привет, {{ currentUserEmail }}</h1>
     </ng-template>
     <p>
       Lorem ipsum dolor sit amet, consectetur adipisicing elit. Animi atque

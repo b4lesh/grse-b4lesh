@@ -12,17 +12,17 @@
       type="email"
       id="inputEmail"
       class="form-control"
-      placeholder="Логин"
-      formControlName="username"
+      placeholder="Email"
+      formControlName="email"
     />
     <p
       *ngIf="
-        registrationForm.controls.username.invalid &&
-        registrationForm.controls.username.touched
+        registrationForm.controls.email.invalid &&
+        registrationForm.controls.email.touched
       "
       class="error-message mb-2"
     >
-      Логин меньше 3 символов
+      Email введен неверно
     </p>
     <label for="inputPassword" class="visually-hidden">Пароль</label>
     <input
@@ -30,12 +30,12 @@
       id="inputPassword"
       class="form-control"
       placeholder="Пароль"
-      formControlName="password1"
+      formControlName="password"
     />
     <p
       *ngIf="
-        registrationForm.controls.password1.invalid &&
-        registrationForm.controls.password1.touched
+        registrationForm.controls.password.invalid &&
+        registrationForm.controls.password.touched
       "
       class="error-message mb-2"
     >
@@ -50,17 +50,20 @@
       class="form-control"
       [ngClass]="{
         'repeat-valid':
-          !registrationForm.errors && registrationForm.controls.password2.dirty,
+          !registrationForm.errors &&
+          registrationForm.controls.passwordRepeat.dirty,
         'repeat-invalid':
-          registrationForm.errors && registrationForm.controls.password2.dirty
+          registrationForm.errors &&
+          registrationForm.controls.passwordRepeat.dirty
       }"
       placeholder="Подтвердите пароль"
-      formControlName="password2"
+      formControlName="passwordRepeat"
       (keyup.enter)="registration()"
     />
     <p
       *ngIf="
-        registrationForm.errors && registrationForm.controls.password2.touched
+        registrationForm.errors &&
+        registrationForm.controls.passwordRepeat.touched
       "
       class="error-message mb-2"
     >
@@ -73,8 +76,8 @@
     >
       Зарегистрироваться
     </button>
-    <p class="mt-3 mb-0 error-message" *ngIf="registrationErrorStatusLogin">
-      Такой пользователь уже существует
-    </p>
+    <div *ngFor="let err of errorList" class="mt-3 mb-0 error-message">
+      <span *ngIf="err.status">{{ err.msg }}</span>
+    </div>
   </form>
 </main>
